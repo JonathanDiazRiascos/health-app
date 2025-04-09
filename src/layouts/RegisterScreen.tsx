@@ -3,6 +3,46 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { supabase } from "../supabaseClient";
 
 export default function RegisterScreen({ onClose }: any) {
+    const[email, setEmail]= useState("");
+    const[password, setPassword] = useState("");
+    const[fullname, setFullName] = useState("");
+    const[mobilephone, setMobilePhone] = useState("");
+    const[loading, setLoading] = useState(false);
+    const[errorMessage, setErrorMessage] = useState("");
+
+    const handleRegister = async() =>{
+        setLoading(true);
+        setErrorMessage("");
+
+    const{data, error}= await supabase.auth.signUp({
+        email, 
+        password
+    });
+
+    if(error){
+        setErrorMessage(error.message);
+        setLoading(false);
+        return;
+    }
+
+    //Insertar datos en Supabase
+    const{error: InsertError}= await supabase.from("users").insert([
+        {
+            email: email,
+            password: password,
+            fullname: fullname,
+            mobilephone: mobilephone
+        }
+    ]);
+    setLoading(false);
+    if(InsertError){
+        setErrorMessage(InsertError.message);
+    }else{
+        alert("User has been created succesfull");
+        onClose();
+    }
+    }
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Sing up</Text>
