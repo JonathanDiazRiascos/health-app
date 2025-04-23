@@ -3,53 +3,66 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { supabase } from "../supabaseClient";
 
 export default function RegisterScreen({ onClose }: any) {
-    const[email, setEmail]= useState("");
-    const[password, setPassword] = useState("");
-    const[fullname, setFullName] = useState("");
-    const[mobilephone, setMobilePhone] = useState("");
-    const[loading, setLoading] = useState(false);
-    const[errorMessage, setErrorMessage] = useState("");
-
-    const handleRegister = async() =>{
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [fullname, setFullName] = useState("");
+    const [mobilephone, setMobilePhone] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    
+    const handleRegister = async () => {
         setLoading(true);
         setErrorMessage("");
 
-    const{data, error}= await supabase.auth.signUp({
-        email, 
-        password
-    });
+        const { data, error } = await supabase.auth.signUp({
+            email, 
+            password
+        });
 
-    if(error){
-        setErrorMessage(error.message);
-        setLoading(false);
-        return;
-    }
-
-    //Insertar datos en Supabase
-    const{error: InsertError}= await supabase.from("users").insert([
-        {
-            email: email,
-            password: password,
-            fullname: fullname,
-            mobilephone: mobilephone
+        if(error) {
+            setErrorMessage(error.message);
+            setLoading(false);
+            return;
         }
-    ]);
-    setLoading(false);
-    if(InsertError){
-        setErrorMessage(InsertError.message);
-    }else{
-        alert("User has been created succesfull");
-        onClose();
+
+        //Insert data into Supabase table
+        const { error: InsertError } = await supabase.from("users").insert([
+            { 
+                email: email, 
+                password: password,
+                fullname: fullname,
+                mobile_phone: mobilephone
+            }
+        ]);
+
+        setLoading(false);
+        if (InsertError) {
+            setErrorMessage(InsertError.message);
+        } else {
+            alert("User has been created successfully");
+            onClose();
+        }
     }
-    }
-    
+
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sing up</Text>
-            <TextInput style={styles.input} placeholder="admin@gmail.com" />
-            <TextInput style={styles.input} placeholder="***************" />
-            <TextInput style={styles.input} placeholder="Full name" />
-            <TextInput style={styles.input} placeholder="(+57)0000000000" />
+            <Text style={styles.title}>Sign up</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="admin@mail.com"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="*********"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Your fullname"
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="(+57) 11111111111"
+            />
             <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
@@ -57,7 +70,6 @@ export default function RegisterScreen({ onClose }: any) {
                 <Text style={styles.link}>Back to login</Text>
             </TouchableOpacity>
         </View>
-
     );
 }
 
@@ -77,7 +89,7 @@ const styles = StyleSheet.create({
         width: "80%",
         padding: 10,
         marginVertical: 10,
-        backgroundColor: "while",
+        backgroundColor: "white",
         borderRadius: 5,
         borderWidth: 1,
         borderColor: "#ccc"
@@ -92,12 +104,12 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "white",
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: "bold"
     },
     link: {
         marginTop: 10,
         color: "blue",
         textDecorationLine: "underline"
-    }
+    },
 });
