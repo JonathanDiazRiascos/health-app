@@ -23,3 +23,12 @@ export default function SplashScreen() {
     )
 
 }
+const styles = StyleSheet.create({
+    Image: {
+        width: "50%",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F0F0F0"
+    }
+})
